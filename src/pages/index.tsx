@@ -258,7 +258,7 @@ const QRScanner = () => {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2 }}
-                className='text-xl font-bold'
+                className='text-xl font-bold text-center'
               >
                 {scanResult.name}
               </motion.span>
