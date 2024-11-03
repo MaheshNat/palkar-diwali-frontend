@@ -11,6 +11,9 @@ import {
   IconScan,
   IconX,
   IconExclamationCircle,
+  IconUser,
+  IconMoodKid,
+  IconBabyBottle,
 } from '@tabler/icons-react';
 import { motion } from 'framer-motion';
 
@@ -274,8 +277,9 @@ const QRScanner = () => {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.5 }}
-                      className='px-3 py-1 text-sm bg-white/40 rounded-full'
+                      className='px-3 py-1 text-sm bg-white/40 rounded-full flex items-center gap-1'
                     >
+                      <IconUser className='w-4 h-4' />
                       {scanResult.additionalInfo.adults}{' '}
                       {scanResult.additionalInfo.adults === 1
                         ? 'Adult'
@@ -287,8 +291,9 @@ const QRScanner = () => {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.6 }}
-                      className='px-3 py-1 text-sm bg-white/40 rounded-full'
+                      className='px-3 py-1 text-sm bg-white/40 rounded-full flex items-center gap-1'
                     >
+                      <IconMoodKid className='w-4 h-4' />
                       {scanResult.additionalInfo.kids}{' '}
                       {scanResult.additionalInfo.kids === 1 ? 'Kid' : 'Kids'}
                     </motion.span>
@@ -298,8 +303,9 @@ const QRScanner = () => {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.7 }}
-                      className='px-3 py-1 text-sm bg-white/40 rounded-full'
+                      className='px-3 py-1 text-sm bg-white/40 rounded-full flex items-center gap-1'
                     >
+                      <IconBabyBottle className='w-4 h-4' />
                       {scanResult.additionalInfo.babies}{' '}
                       {scanResult.additionalInfo.babies === 1
                         ? 'Baby'
