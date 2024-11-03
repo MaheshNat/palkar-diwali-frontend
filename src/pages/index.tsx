@@ -3,7 +3,6 @@ import jsQR from 'jsqr';
 import { useMutation } from '@tanstack/react-query';
 import { decodeQR } from '@/lib/queries';
 import { QRScanResult, ScanningState } from '@/lib/types';
-import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import {
   IconCheck,
@@ -25,7 +24,6 @@ const FAILURE_DISPLAY_TIME = 5_000; // 1 minute to show error state
 const QRScanner = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [scanningState, setScanningState] = useState<ScanningState>('idle');
-  const [autoScan, setAutoScan] = useState(true);
 
   // for debouncing repeated errored attempts
   const [scanAttempts, setScanAttempts] = useState(0);
@@ -53,15 +51,12 @@ const QRScanner = () => {
 
         // Reset only the success display state after timeout
         successTimeoutRef.current = setTimeout(() => {
-          if (autoScan) setScanningState('scanning');
-          else setScanningState('idle');
+          setScanningState('scanning');
           setScanResult(null);
         }, SUCCESS_DISPLAY_TIME);
 
-        // If auto-scan is on, resume scanning immediately
-        if (autoScan) {
-          startScanning('success');
-        }
+        // Always resume scanning immediately
+        startScanning('success');
       } else {
         setScanningState('error');
       }
@@ -73,11 +68,9 @@ const QRScanner = () => {
         message: 'Failed to process QR code',
       });
 
-      // If auto-scan is on, resume scanning after error state timeout
-      if (autoScan)
-        setTimeout(() => {
-          startScanning('error');
-        }, FAILURE_DISPLAY_TIME);
+      setTimeout(() => {
+        startScanning('error');
+      }, FAILURE_DISPLAY_TIME);
     },
   });
 
@@ -113,10 +106,8 @@ const QRScanner = () => {
             });
           };
         });
-      }
 
-      // Start scanning immediately if auto-scan is enabled
-      if (autoScan) {
+        // Always start scanning immediately
         startScanning();
       }
     } catch (err) {
@@ -334,21 +325,6 @@ const QRScanner = () => {
     );
   };
 
-  // Update auto-scan toggle handler
-  const handleAutoScanToggle = (enabled: boolean) => {
-    setAutoScan(enabled);
-    if (enabled) {
-      startScanning('scanning');
-    } else {
-      // Clear all intervals and timeouts
-      clearInterval(scanIntervalRef.current);
-      clearTimeout(successTimeoutRef.current);
-      setScanningState('idle');
-      setScanResult(null);
-      setLastScannedData(null);
-    }
-  };
-
   return (
     <div className='relative h-screen'>
       {cameraPermission === 'denied' ? (
@@ -376,33 +352,6 @@ const QRScanner = () => {
             />
           )}
           {renderStatusBar()}
-
-          <div className='absolute bottom-20 left-0 right-0 flex flex-col items-center gap-4'>
-            <div className='flex items-center gap-2 bg-black/30 px-4 py-2 rounded-full'>
-              <Switch
-                checked={autoScan}
-                onCheckedChange={handleAutoScanToggle}
-                size='sm'
-              />
-              <span className='text-sm text-white font-bold'>
-                Auto-scan mode
-              </span>
-            </div>
-
-            {!autoScan && (
-              <button
-                onClick={() =>
-                  scanningState === 'idle' && startScanning('scanning')
-                }
-                disabled={
-                  !(scanningState === 'idle' || scanningState === 'success')
-                }
-                className='w-16 h-16 rounded-full bg-white/20 border-4 border-white/40 
-                         hover:bg-white/30 transition-colors disabled:opacity-50 
-                         disabled:cursor-not-allowed'
-              />
-            )}
-          </div>
         </>
       )}
     </div>
